@@ -17,15 +17,12 @@ class Reversi
       output(@board)
 
       if finished?(@board)
-        puts '試合終了'
-        puts "白○:#{count_stone(@board, WHITE_STONE)}"
-        puts "黒●:#{count_stone(@board, BLACK_STONE)}"
+        print_result
         break
       end
 
       unless placeable?(@board, @current_stone)
-        puts '詰みのためターンを切り替えます'
-        toggle_stone
+        skip_turn
         next
       end
 
@@ -33,16 +30,7 @@ class Reversi
       command = gets.chomp
       break if QUIT_COMMANDS.include?(command)
 
-      begin
-        if put_stone(@board, command, @current_stone)
-          puts '配置成功、次のターン'
-          toggle_stone
-        else
-          puts '配置失敗、ターン据え置き'
-        end
-      rescue StandardError => e
-        puts "ERROR: #{e.message}"
-      end
+      place_stone(command)
     end
 
     puts 'finished!'
@@ -52,6 +40,32 @@ class Reversi
 
   def toggle_stone
     @current_stone = @current_stone == WHITE_STONE ? BLACK_STONE : WHITE_STONE
+  end
+
+  def print_result
+    puts '試合終了'
+    puts "白○:#{count_stone(@board, WHITE_STONE)}"
+    puts "黒●:#{count_stone(@board, BLACK_STONE)}"
+  end
+
+  def skip_turn
+    puts '詰みのためターンを切り替えます'
+    toggle_stone
+  end
+
+  def next_turn
+    puts '配置成功、次のターン'
+    toggle_stone
+  end
+
+  def place_stone(command)
+    if put_stone(@board, command, @current_stone)
+      next_turn
+    else
+      puts '配置失敗、ターン据え置き'
+    end
+  rescue StandardError => e
+    puts "ERROR: #{e.message}"
   end
 end
 

@@ -44,6 +44,10 @@ class Position
     board[row][col]
   end
 
+  def set_stone_color(board, color)
+    board[row][col] = color
+  end
+
   def to_cell_ref
     return '盤面外' if out_of_board?
 
